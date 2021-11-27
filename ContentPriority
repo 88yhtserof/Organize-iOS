@@ -1,0 +1,36 @@
+Content Priority
+
+UI Framework에서 제공되는 일부 뷰에는 컨텐츠 고유 사이즈라는 개념이 있다.
+예 UILabe, UIButton 과 같은 속성, 텍스트나 이미지에 따라 크기가 결정되는 뷰들이 있다. 이런 뷰들은 다른 뷰들간에 걸린 제약에 의해서 본래의 컨텐츠 고유 사이즈보다 더 늘어나거나 줄어들게 된다.
+더 늘어나는 것에 대해 저항하는 제약을 Content Hugging이라 하고
+더 줄어드는것에 대해 저항하는 제약을 Content Compression Resistance라고 한다.
+고유 컨텐츠 사이즈 변경에 대한 제약에도 우선순위가 있다. 이 우선 순위에 따라 고유 사이즈보다 더 늘어나게 되었을 때, 사이즈를 늘어나게 할 건지 줄어들게 할 건지 정할 수 있다. 
+
+(1) Content Hugging Priority
+-> 최대 크기에 대한 제약
+-> 우선 순위가 낮을 수록 크기 확장
+
+Content Hugging Priority는 우선순위가 높을 수록 내 크기를 유지하고, 우선순위가 낮으면 크기가 늘어난다.
+명언 내용 부분은 명언에 따라 길이가 다르기 때문에 내용이 길면 영역도 늘어나야 한다. 따라서 Content Hugging Priority 우선순위를 명언 이름보다 낮게 설정해 길이가 길 때 늘어나도록 설정한다.
+명언 내용 Content Hugging Priority vertical 250
+명언 이름 Content Hugging Priority vertical 251
+
+참고
+Priority는 1~1000까지 1단위로 값을 설정할 수 있다.
+1000 required
+750 high
+500 medium
+250 low
+이 값을 사용하는 것이 바람직하다
+
+(2) Content Compression Resistance
+: 압축에 대한 저항
+-> 최소 크기에 대한 저항
+-> 우선 순위가 낮을 수록 크기 축소
+
+lable에 문자열이 너무 많아 표현할 공간이 부족. 이 때 어떤 lable을 유지시킬지 정해야한다.
+우선순위가 높으면 자신의 크기를 유지하고, 우선순위가 낮으면 크기가 줄어들게 된다.
+명언의 내용이 많더라도 명언 이름이 안 나오면 안 되니깐 명언 이름의 본 크기를 고정시키기 위해 명언 이름 lable의 Content Compression Resistance Priority vertical 우선순위를 높게 한다.
+명언 내용 Content Compression Resistance Priority vertical 750
+명언 이름 Content Compression Resistance Priority vertical 1000
+
