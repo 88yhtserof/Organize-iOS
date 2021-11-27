@@ -1,0 +1,84 @@
+화면 전환 개념
+
+  화면 전화 방법 종류
+
+  1. 소스코드를 통해 전환하는 방식
+    (1) View Controller의 View 위에 다른 View를 가져와 바꿔치기 (권장하지 않음)
+    (2) View Controller에서 다른 View Controller를 호출하여 전환하기
+    (3) Navigation Controller를 사용하여 화면 전환하기
+    
+  2. Storyboard를 통해 전환하는 방식
+    (4) 화면 전환 용 객체 세그웨이(Segueway)를 사용하여 화면 전환하기
+    
+    
+ -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  (2) View Controller에서 다른 View Controller를 호출하여 전환하기
+  
+    - 현재 뷰 컨트롤러에서 도착지 뷰 컨트롤러를 호출해서 화면에 표시하는 방법이다. 
+    - 직접 표시한다는 의미에서 Presentation 방식이라고도한다. 
+    - 기존 뷰 컨트롤러에 새로운 뷰 컨트롤러를 덮는 방식이다.
+    - present 메서드에 파라미터로 도착지 뷰 컨트롤러를 넘겨주면 도착지 뷰 컨트롤러가 화면에 표시된다.
+       a. 첫 번째 파라미터는 도착지 뷰 컨트롤러
+       b. 두 번째 파라미터는 애니메이션 유무
+       c. 세 번째 파라미터에는 completion이라는 closure를 전달받고 있는데, 화면 전환이 완료되는 시점에 맞추어 closure가 호출된다.
+          화면 전환 방식은 비동기적으로 호출되기 때문에 화면 전환이 완료된 후 코드로 처리해야 할 일이 있다면 cloure에 작성하면 된다.
+          
+          func present(_ viewControllerToPresent: UIViewController,
+                          animated flag: Bool,completion: (() -> Void)? = nil)
+          
+    - present메서드를 사용해 화면 전환 된 후, 이전 화면으로 돌아가기 위해서는 dismiss 메서드를 사용하면 된다.
+      a. 이전 화면은 이미 정해져 있으니 뷰 컨트롤러를 따로 설정해주지 않아도 된다. 
+      b. present메서드와 동일하게 애니메이션 유무와 화면 전환이 완료되는 시점 실행되는 closure를 파라미터로 넘겨주면 된다.
+      
+        func dismiss(animated flag: Bool, completion: (() -> Void)? = nil)
+
+
+
+
+  (3) Navigation Controller를 사용해 화면 전환하기
+    
+    - 계층적인 성격을 띠는 content 구조를 관리하기 위한 컨트롤러이다.
+    - Navugation Controller는 뷰 컨트롤러의 전환을 직접 컨트롤하고 앱에 내비게이션 정보를 표시 하는 역할을 수행한다. 
+    - Navigation Stack으로 자식 뷰 컨트롤러를 관리한다. 
+    - pushViewController 메서드를 사용해서 뷰 컨트롤러를 스택에 추가하고, popViewController메서드를 사용해서 스택에 있는 뷰 컨트롤러를 제거한다. 
+    - pushViewController메서드
+      a. 첫 번째 는 도착지 뷰컨트롤러
+      b.두 번째 파라미터는 애니메이션 여부
+      
+      func pushViewController(_ viewController: UIViewController, animated: Bool)
+      
+    - popViewController메서드
+      a. 첫 번째 파라미터는 애니메이션 여부
+      
+      func popViewController(animated: Bool) -> UIViewController?
+      
+
+
+  (4) 화면 전환용 객체 세그웨이(Segueway)를 사용하여 화면 전환하기
+    - 세그웨이는 두 개의 뷰컨트롤러 사이에 연결되는 화면 전환 객체이다. 스토리 보드를 통해 출발지와 도착지를 지정하는 방식을 '세그웨이를 통한 화면 전환’이라고 한다. 
+    - 세그웨이를 사용하면 따로 코드를 작성하지 않아도 화면을 전환할 수 있는 것이 특징이다.
+    - 종류
+      a. Action Segueway
+        출발점이 버튼, cell 등인 경우. 버튼과 같이 트리거 이벤트가 세그웨이로 바로 연결된다. 따라서 소스코드를 구현하지 않아도 화면 전환을 할 수 있다. 
+      b. Manual Segueway
+        출발지가 뷰 컨트롤러 자체인 경우. 적절한 시점에 performSegue메서드를 호출하면서 세그웨이가 실행되어 화면 전환이 일어난다. 
+        
+   - Action Segueway 종류
+      a. Show 
+        가장 일반적인 세그웨이로, 내비게이션 컨트롤러를 사용하면 화면 전환 시 뷰 컨트롤러가 Navigation stack에 쌓이게 되고, 만약 내비게이션 컨트롤러를 사용하지 않을 시에는 뷰 컨트롤러가 present된다.
+      b. Show Detail 
+        Split View에서 사용하는 세그웨이로, 아이패드에서 사용하게 되면 Split 구조의 Master/slave 구조가 되서 보이게 된다. 예) 아이패드에서 보는 메세지
+      c. Present Modally
+        이전 뷰 컨트롤러를 덮으면서 새로운 화면이 나타난다 present 방식으로 화면 전환
+      d. Present As Popover
+        아이패드에서 사용 시 팝업 창이 뜬다. 
+      e. Custom
+        세그웨이를 사용자가 원하는 방식으로 커스텀한다.
+
+
+
+
+
+
+
