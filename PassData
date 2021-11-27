@@ -1,0 +1,32 @@
+Pass Data
+
+  데이터 전달 방법
+    1. intance property - 뷰 컨트롤러를 인스턴스화하여 해다 뷰 컨트롤러의 프로퍼티에 접근하는 방법
+    2. segue - 보통 Main 스토리보드에서 여러 뷰 컨트롤러가 있을 때 사용한다.prepare 메서드와 destination, storyboard id를 사용하는 방법
+    3. instance - 해당 화면에 접근하려하는 인스턴스를 통으로 넘겨줘서 직접 접근할 수 있게 하는 방법
+    4. delegate pattern - 위임자를 가지고 있는 객체가 자신의 일을 다른 객체에게 위임하는 형태의 방법
+    5. closure
+    6. Notification
+    
+    
+    1. instance property
+      A화면에서 B화면으로 데이터 전달 시, B화면에 해당하는 뷰 컨트롤러를 인스턴스화한다. 이 인스턴스로 뷰 컨트롤러의 프로퍼티에 접근하여 전달할 데이터를 할당한다. 
+      그 다음 B화면의 뷰 컨트롤러에서 데이터를 전달받은 프로퍼티로 데이터를 활용한다.
+      
+      예) A화면에서 'A화면에서 전달된 데이터'라는 String을 button 클릭 시 B화면으로 전달하여 B화면에 글자를 보이게 하라.
+        (1)B화면 뷰 컨트롤러에 해당 글자를 띄울 Lable 아울렛 변수와 String타입의 name 변수를 생성한다.
+        (2)A화면 뷰 컨트롤러의 button 액션함수에 B화면의 뷰 컨트롤러를 인스턴스화한다. 그후 인스턴스.name에 전달하고자 하는 데이터를 할당한다.
+        (3)B화면 뷰 컨트롤러에서 Lable.text에 name 변수를 할당한다.
+      
+        <A화면의 뷰 컨트롤러>
+        @IBAction func tapCodePresentBtn(_ sender: UIButton) {
+          //instantiateViewController메서드를 사용해서 스토리보드 내 뷰 컨트롤러를 인스턴스화한다.
+          //옵셔널을 반환하기 때문에 guard문을 사용해서 옵셔널 바인딩한다.-> 명시적으로 옵셔널 값 추출
+          //각 타입에 맞는 뷰컨트롤러로 다운 캐스팅하면, 해당 뷰컨트롤러에 정의되어 있는 변수에 접근할 수 있다. 예: CodePresentViewController.name
+          guard let viewController 
+            = self.storyboard?.instantiateViewController(identifier: "CodePresentViewController")as? CodePresentViewController else {return}
+          viewController.name = "yh"
+        
+          //present메서드에 인스턴스화된 ViewController를 넘겨준다.
+          self.present(viewController, animated: true, completion: nil)
+        }
