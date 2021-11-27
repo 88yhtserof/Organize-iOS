@@ -61,5 +61,46 @@ Pass Data
   
   
   
+  4. Delegate Pattern
+    delegate : 대리인, 위임하다. 즉, 위임자를 가지고 있는 객체가 자신의 일을 다른 객체에게 위임하는 형태의 방법
+    데이터를 전달하는 뷰 컨트롤러에 delegate 프로토콜을 생성하고 화면 전환 전 delegate 프로토콜에 선언한 함수를 파라미터에 전달할 데이터를 담아 호출한다.
+    데이터를 전달받을 뷰 컨트롤러에서 위 프로토콜을 채택하여 프로토콜을 준수한다(함수를 구현한다).
+    
+    delegate 패턴을 새용할 때, delegate 변수 앞에 weak 키워드를 적어 주어야 한다. 안 붙여주면 강한 순환 참조가 걸려 메모리 누수가 발생할 수도 있다.
+    week 키워드를 붙이려면 프로토콜 생성 시 AnyObject를 준수해야한다.
   
+  
+    예) B화면에서 'B화면에서 전달된 데이터'라는 String을 button 클릭 시 이전 화면인 A화면으로 전달하여 A화면에 글자를 보이게 하라.
+      (1)B화면의 뷰 컨트롤러에 delegate 프로토콜을 생성하고 그 아래에 String 타입의 파라미터를 가진 passData 함수을 선언한다.
+      (2)B화면 뷰 컨트롤러에 위 프로토콜 타입의 변수를 선언한다. weak 키워드를 붙여 메모리 누수를 방지한다.
+      (2)button의 액션 함수에 전달할 데이터를 담아 passData를 호출한다. 그 후 화면 전환한다.
+      (3)A화면 뷰 컨트롤러에 위 프로토콜을 채택하여 passData를 구현한다. 이 함수 아래에는 파라미터 값이 Lable.text에 할당되도록 구현한다.
+      
+      
+      <B화면의 뷰 컨트롤러>
+       protocol SendDataDelegate: AnyObject {
+        func passData(name: String)
+      }
+
+      class CodePresentViewController: UIViewController {
+
+        var name:String?
+        weak var delegate: SendDataDelegate?
+    
+        ...
+        @IBAction func tapBackBtn(_ sender: UIButton) {
+          self.delegate?.passData(name: "yh")
+          self.presentingViewController?.dismiss(animated: true, completion: nil)
+        }
+      }
+      
+      
+      <A화면의 뷰 컨트롤러>
+      //한 쪽에 몰아서 작성하면 복잡하니깐 뷰 컨트롤러를 확장하여 델리게이트를 준수하자  
+      extension ViewController: DelegateDetailViewControllerDelegate {
+        func passString(message: String) {
+        self.lbData.text = message
+        }
+      }
+
   
