@@ -1,0 +1,130 @@
+UITableView
+  : 데이터를 목록 형태로 보여 줄 수 있는 가장 기본적인 UI컴포넌트
+    - UIScrollView를 상속받고 있으므로 스크롤이 가능해 많은 양의 리스트들을 보여줄 수 있다.
+    - 아이폰의 연락처와 설정 앱이 테이블 뷰로 구현되어 있다. 
+    -	여러 개의 Cell을 가지고 있고 하나의 열과 여러 줄의 행을 지니고 있으며, 수직으로만 스크롤이 가능하다.
+    -	섹션을 이용해 행을 그룹화하여 콘텐츠를 좀 더 쉽게 탐색할 수 있다.
+    -	섹션의 헤더와 풋터에 View를 구성하여 추가적인 정보를 표시할 수 있다.
+    - 아이폰 기본 설정 앱과 같이 여러 개의 섹션으로 분리해 연관있는 콘텐츠를 그룹화하여 표시할 수 있고, 연락처 앱과 같이 섹션에 헤더를사용하여 알파벳으로 연락처리스트를 그룹화하여 표시할 수 있다.
+
+  TableView를 사용하기 위해서는 UITableView의 DataSource와 UITableView의 Delegate Protocol을채택하여 구현해줘야 한다.
+    - DataSource : 데이터를 받아 뷰를 그려주는 역할. 섹션이 총 몇 개인지, 섹션의 행은 몇 개인지, 행이 어떤 정보를 표시할 것인지 등을 정의할 수 있다
+    - Delegate : 데이블뷰의 동작과 외관을 담당한다. Delegate는 행의 높이, 행을 선택하면 어떤 액션을 할 것인지 등을 정의할 수 있다. 
+    즉, 변경되는 사항을 Delegate가 담당하고, 뷰는 델리게이트에 의존하여 뷰를 업데이트한다고 생각하면 된다. 
+    따라서 테이블뷰는 DataSource와 Delegate의 정의에 따라 테이블뷰를 사용자에게 어떻게 표시할 건지 결정한다. 
+
+
+  1) UITableViewDataSource
+    : 테이블 뷰를 생성하고 수정하는 필요한 정보를 테이블 뷰 객체에 제공
+    
+    UITableViewDateSource에 정의되어 있는 메서드 종류
+      -	메서드 앞에 optional로 선언되어있는 않은 메서드는 필수로 구현해야한다.
+
+        func tableView(_ tableView: UITableView, 
+        numberOfRowsInSection section: Int) -> Int
+         : 각 섹션에 표시할 행의 개수를 묻는 메서드
+          -	Int 타입으로 행의 개수를 반환을 하면, table View의 반환된 개수만큼 표시가 된다.
+          -	UITableViewDataSource프로토콜 채택 시 필수 구현 메서드
+
+        func tableView(_ tableView: UITableView, 
+        cellForRowAt indexPath: IndexPath) -> UITableViewCell
+        : 특정 인덱스 행에 Cell에 대한 정보를 넣어 Cell을 반환하는 메서드
+          -	셀을 구성하고 보여줄 데이터를 설정한 후에 해당 메서드에 반환을 하면 구성한 cell이 테이블뷰에 표시된다. 
+          -	UITableViewDataSource 프로토콜 채택 시 필수 구현 메서드
+
+        optional func numberOfSections(in tableView: UITableView) -> Int
+        : 총 섹션의 개수를 묻는 메서드
+          -	Int 타입으로 섹션의 개수를 반환하면 테이블 뷰에 반환된 개수만큼 섹션이 표시된다. 
+
+        optional func tableView(_ tableView: UITableView, 
+        titleForHeaderInSection section: Int) -> String?
+        : 특정 섹션의 헤더 타이틀을 묻는 메서드
+          -	특정 섹션에 표시하고 싶은 문자열을 반환하면 헤더에 반환된 문자열이 표시된다.
+
+        optional func tableView(_ tableView: UITableView, 
+        titleForFooterInSection section: Int) -> String?
+        : 특정 섹션의 풋터 타이틀을 묻는 메서드
+          -	특정 섹션에 표시하고 싶은 문자열을 반환하면 풋터에 반환된 문자열이 표시된다.
+
+        optional func tableView(_ tableView: UITableView, 
+           canEditRowAt indexPath: IndexPath) -> Bool
+        : 특정 위치의 행이 편집 가능한지 묻는 메서드
+          -	True를 반환을 하면 특정 cell에 스와이프 메뉴를 사용할 수 있다.
+
+        optional func tableView(_ tableView: UITableView, 
+           canMoveRowAt indexPath: IndexPath) -> Bool
+        : 특정 위치의 행을 재정렬할 수 있는지 묻는 메서드
+
+        optional func sectionIndexTitles(for tableView: UITableView) -> [String]?
+        : 테이블 뷰 섹션 인덱스 타이틀을 묻는 메서드
+          -	문자열 배열을 반환을 하면 아이폰 기본 연락처 앱처럼 오른쪽 초성과 알파벳으로 색인할 수 있는 뷰가 표시됩니다.
+
+        optional func tableView(_ tableView: UITableView, 
+        sectionForSectionIndexTitle title: String, 
+                     at index: Int) -> Int
+        : 인덱스에 해당하는 섹션을 알려주는 메서드
+          -	아이폰 기본 연락처 앱처럼 오른쪽에 초성과 알파벳으로 구성된 인덱스를 선택했을 때 인덱스 인자로 인덱스 중 몇 번째가 눌렸는지 알려준다. 
+            어느 섹션으로 이동할 지 섹션 인덱스 값을 반환해주면, 인덱스를 선택했을 때 반환된 섹션 인덱스로 이동한다. 
+
+        optional func tableView(_ tableView: UITableView, 
+                 commit editingStyle: UITableViewCell.EditingStyle, 
+               forRowAt indexPath: IndexPath)
+        : 스와이프 모드, 편집모드에서 버튼을 선택하면 호출되는 메서드
+          -	만약 버튼이 선택되었을 때 행이 사라지거나 추가가 되면 해당 메서드에서는 행에 변경사항을 Commit해야 한다. 
+
+        optional func tableView(_ tableView: UITableView, 
+              moveRowAt sourceIndexPath: IndexPath, 
+                     to destinationIndexPath: IndexPath)
+        : 행이 다른 위치로 이동되면 어디에서 어디로 이동했는지 알려주는 메서드
+
+
+  2) UITableViewDelegate
+   : 테이블 뷰의 시각적인 부분을 설정하고, 행의 액션관리, 액세서리 뷰 지원 그리고 테이블 뷰의 개별 행 편집을 도와준다.
+    -	UITableViewDelegate 채택시 필수 구현해야하는 메서드는 없다.
+
+
+        optional func tableView(_ tableView: UITableView, 
+         didSelectRowAt indexPath: IndexPath)
+        : 행이 선택되었을 때 호출되는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+       didDeselectRowAt indexPath: IndexPath)
+        : 행이 선택 해제되었을 때 호출되는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+         heightForRowAt indexPath: IndexPath) -> CGFloat
+        : 특정 위치 행의 높이를 묻는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+        viewForHeaderInSection section: Int) -> UIView?
+        : 지정된 섹션의 헤더 뷰에 표시할 View가 어떤 건지 묻는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+         viewForFooterInSection section: Int) -> UIView?
+        : 지정된 섹션의 풋터 뷰에 표시할 View가 어떤 건지 묻는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+        heightForHeaderInSection section: Int) -> CGFloat
+        : 지정된 섹션의 헤더 뷰의 높이를 묻는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+        heightForFooterInSection section: Int) -> CGFloat
+        : 지정된 섹션의 풋터 뷰의 높이를 묻는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+        willBeginEditingRowAt indexPath: IndexPath)
+        : 데이블 뷰가 편집 모드에 들어갔을 때 호출되는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+        didEndEditingRowAt indexPath: IndexPath?)
+        : 테이블 뷰가 편집 모드에서 빠져나왔을 때 호출되는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+            willDisplay cell: UITableViewCell, 
+               forRowAt indexPath: IndexPath)
+        : 테이블 뷰가 cell을 사용하여 행을 그리기 직전에 호출되는 메서드
+
+        optional func tableView(_ tableView: UITableView, 
+       didEndDisplaying cell: UITableViewCell, 
+               forRowAt indexPath: IndexPath)
+        : 데이블 뷰로부터 cell이 화면에 사라지면 호출되는 메서드
