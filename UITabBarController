@@ -1,0 +1,10 @@
+UITabBar
+앱에서 서로 다른 하위작업, 뷰, 모드 사이의 선택을 할 수 있도록 탭바에 하나 혹은 이상의 버튼을 보여주는 컨트롤
+UITabBar 안의 각각의 요소들은 UITabBarItem이라고 한다. 
+보통 UITabBar는 UITabBarController와 함께 사용하지만, 앱에서 독립적인 컨트롤로 사용할 수도 있다. 
+UITabBarItem을 tap하게 되면 아이텀이 선택되고 강조되게 된다. 그리고 앱에서 그 아이템에 상응하는 행동을 구현할 수 있다. 
+
+UITabBarController
+다중 선택 인터페이스를 관리하는 컨테이너 뷰 컨트롤러로, 선택에 따라 어떤 자식 뷰 컨트롤러를 보여줄 것인지가 결정된다.
+UITabBarController는 UIVieaController를 상속받는 클래스임으로 View 속성을 갖는다. 해당 뷰는 TabBarView와 Custom 컨텐츠를 포함한 뷰이다.
+TabBarView는 사용자를 위해 선택 컨트롤러를 제공하고 하나 또는 한 이상의 TabBarItem으로 구성이 된다. 그리고 선택된 아이템이 해당하는 컨텐트가 화면에 표시되게 된다.
