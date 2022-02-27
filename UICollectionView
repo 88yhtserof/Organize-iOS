@@ -1,0 +1,64 @@
+UICollectionView
+데이터 항목의 정렬된 컬렉션을 관리하고 커스텀한 레이아웃을 사용해 표시하는 객체
+tableView처럼 스크롤뷰를 상속받고 있고 다양한 레이아웃을 보여줄 때 사용한다.
+TableView는 리스트 형태로만 구현이 가능하지만, 컬렉션은 리스트형태로 표현이 가능하고 슬라이드와 같이 다양한 형태로 표현이 가능하다.
+CollectionView의 구성
+-	Cell: 컬렉션 뷰의 주요 콘텐츠를 표시, collectionView는 CollectionView 데이터 소스 객체에서 표시할 cell의 정보를 가져온다. 
+-	Supplementary View : 섹션에 대한 정보를 표시하는 뷰, 헤더와 풋터라고 보면된다.(필수x)
+-	Decoration View 컬렉션 뷰에 대한 배경을 꾸밀 때 사용, 레이아웃객체는 DecorationView를 사용하여 커스텀한 배경을 구현할 수 있다.
+ 
+
+
+CollectionView Layouts
+-	UICollectionViewLayout
+-	UICollectionViewFlowLayout
+컬렉션뷰는 레이아웃 객체를 통해 컬렉션 뷰 내에 아이템 배치 및 시각적 스타일을 결정하는데요, 레이아웃 객체가 하는 일은 cell, supplementaryView, 컬렉션 뷰의 바운드, 내부에 있는 decorationView의 위치를 결정하고 시각적 상태의 정보를 컬렉션 뷰에 제공한다. 
+UICollectionView에서는 UICollectionViewFlowLayout의 클래스에 레이아웃 객체를 사용해서 항목들을 정렬할 수 있는데요, 해당 클래스를 사용하게 되면 cell을 원하는 형태로 정렬할 수 있다. FlowLayout은 셀의 선형 경로를 배치하는데요, 최대한 행을 따라 많은 셀을 채우다가 현재의 행에 셀이 더이상 들어갈 수 없게되면 새로운 행을 만들어 계속 배치해 나가게 된다.
+
+ 
+세로로 스크롤이 되는 FlowLayout인 경우, 여기서 셀은 선형경로에 따라 가로로 그려지고 만약 행에 셀이 가득 차면 아래로 행을 새로 만들어 셀을 채워나간다. 
+
+FlowLayout을 통해 다양한 모양을 만들 수 있다.
+ 
+
+
+ 
+
+
+
+UICollectionViewFlowLayoyt의 구성단계
+1.	Flow레이아웃을 객체를 작성하고 컬렉션 뷰에 레이아웃으로 이를 할당한다.
+2.	셀의 width, height를 정한다.(중요-지정하지 않으면 너비와 높이가 0이되어 보이지 않게 된다.)
+3.	필요한 경우 셀들 간의 좌우 최소 간격, 위아래 최소 간격을 설정한다.
+4.	섹션에 header와 footer가 있다면 이것드르의 크기를 지정한다.
+5.	레이아웃의 스크롤 방향을 설정한다.
+
+FlowLayout은 cell과 행 사이의 간격을 설정할 수 있다. 여기서 설정하는 간격은 최소간격으로 배치하는 방법에 따라 지정한 값보다 큰 값으로 설정될 수도 있다. Cell들의 크기가 같으면 최소로 설정한 간격을 지킬 수 있지만 셀들의 크기가 다르면 실제 간격이 다를 수 있다. 
+
+ 
+위와 같이 셀들의 크기가 다를 경우, 최소로 설정한 간격과 다르게 나타날 수 있다.
+
+
+ 
+또 FlowLayout은 위와 같이 셀과 행간의 간격 이외에도 섹션 자체에 공간을 줄 수 있다. UIEdgeInsetsMake()을 사용하여 top, left ,bootom, right의 공간을 줄 수 있다.
+
+
+
+UICollectionViewDataSource
+컬렉션 뷰는 테이블 뷰와 마찬가지로 DataSource에 따라 사용자에게 어떤 콘텐츠를 표시할 지 결정하는데요, 컬렉션 뷰에서 데이터소스는 컬렉션 뷰로 보여주는 콘텐츠들을 관리하는 객체이다. 데이터 소스를 정의하기 위해서 UICollectionViewDataSource프로토콜을 준수해야한다. 데이타소스의 역할은 컬렉션 뷰에 몇 개의 섹션이 있는지 특정 섹션에 몇 개의 셀이 있는지 특정 섹션이나 셀의 컨텐츠를 보여주기위해 어떤 뷰를 사용할 것인지 등과 같은 정보를 컬렉션뷰에 제공하는 역할을 한다. 
+
+UICollectionViewDataSource의 주요 메서드
++ optional로 선언된 메서드는 UICollectionViewDataSource프로토콜를 준수하기 위해 필수로 구현해야한다.
+-	Funk collectionView(_ collectionView: UICollectionView, numberOfItemInSection sectionL Int) -> Int? : 지정된 섹션에 표시할 셀의 개수를 묻는 메서드
+-	Fung collectionView(_ collectionView: UICollectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell : 컬렉션뷰의 지정된 위치에 표시할 셀을 요청하는 메서드
+-	Optional func numberOfSections(in collectionView: UICollectionView) -> Int : 섹션의 개수를 묻는 메서드
+
+
+
+UICollectionViewDelegate
+콘텐츠의 표현, 사용자와의 상호작용과 관련된 것들을 관리하는 객체
+DataSource와는 다르게 Delegate는 필수로 구현하지 않아도 된다.
+ 
+컬렉션뷰와 관련되는 핵심 객체들의 관계는 위 사진과 같다. 컬렉션 뷰는 데이터소스에서 보여줄 셀이 대한 정보를 가져오고, 레이아웃 객체에서 해당 셀이 속하는 위치를 결정하고 하나 이상의 레이아웃 속성객체로 컬렉션뷰로 전송을 한다. 그런다음 컬렉션뷰는 레이아웃 정보를 실제 셀이나 다른 뷰들과 결합하여 최종적으로 사용자에게 보여지게 된다. 
+
+
