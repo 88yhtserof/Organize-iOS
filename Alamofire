@@ -1,0 +1,94 @@
+Alamofire을 이용한 HTTP 통신 알아보기
+
+1.	Alamofire란?
+Alamofire는 Swift 기반의 HTTP 네트워킹 라이브러리이다.
+URLSession에 기반한 라이브러리로 네트워킹 작업을 단순화하고 네트워킹을 위한 다양한 메서드들과 JSON 파싱(?) 등을 제공한다. 
+
+2.	주요 특징
+연결가능한 request, response 메서드를 제공하고 URL, JSON 형태 파라미터 인코딩을 지원한다. 또 파일 데이터 스트링 멀티파트폼 데이터 등 업로드 기능을 제공
+HTTP response 검증과 광범위한 단위 테스트 및 통합 테스트를 보장한다.
+
+3.	URLSession 대신 Alamofire을 사용하는 이유
+Alamofire를 사용하지 않더라도 애플에서 기본적으로 제공하는 URLSession을 통해서도 HTTP 통신이 가능한데, 그러지 않는 이유는
+코드의 간소화, 가족성 측면에서 도움을 주고 여러 기능을 직접 구축하지 않아도 쉽게 사용할 수 있기 때문이다. 
+ 
+URLSession은 호출할 API의 URL을 생성하고 쿼리 파라미터가 있다면 URL에 맵핑시켜주는 코드를 작성해야 하지만 Alamofire는 요청을 생성할 때 메서드 파라미터에 URL과 파라미터를 넘겨주면 내부에서 자동으로 URL의 파라미터를 맵핑시켜줍니다. 유효성 검사같은 경우에도 URLSession은 response 객체를 HTTP response로 다운캐스팅하여 status 코드 프로퍼티에 접근해 200번대인지 확인하는 코드를 직접 작성해야하지만,
+Alamofire는 validate() 메서드만 호출을 하면 정상 status 코드 범위인 200번대 상태코드만 허용하게 만들어 줄 수 있다.
+
+4.	Alamofire의 사용방법
+request 메서드를 이용해 HTTP 요청
+메서드 파라미터로 URL과 HTTP 메서드, 파라미터 등 요청에 필요한 정보들을 쉽게 전달할 수 있다.
+open func request<Parameters: Encodable>(_ convertible: URLConvertible,
+method: HTTPMethod = .get,
+parameters: Parameters? = nil,
+encoder: ParameterEncoder = URLEncodedFormParameterEncoder.default,
+headers: HTTPHeaders? = nil,
+interceptor: RequestInterceptor? = nil ) -> DataRequest
+
+	
+	Alamofire는 HTTP Method도 지원한다.
+public struct HTTPMethod: RawRepresentable, Equatable, Hashable {
+    public static let connect = HTTPMethod(rawValue: "CONNECT")
+    public static let delete = HTTPMethod(rawValue: "DELETE")
+    public static let get = HTTPMethod(rawValue: "GET")
+    public static let head = HTTPMethod(rawValue: "HEAD")
+    public static let options = HTTPMethod(rawValue: "OPTIONS")
+    public static let patch = HTTPMethod(rawValue: "PATCH")
+    public static let post = HTTPMethod(rawValue: "POST")
+    public static let put = HTTPMethod(rawValue: "PUT")
+    public static let trace = HTTPMethod(rawValue: "TRACE")
+
+    public let rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+}	
+요청을 만들 때 request 메서드 파라미터에 HTTP 메서드를 전달할 수 있다.
+AF.request("https://httpbin.org/get")
+AF.request("https://httpbin.org/post", method: .post)
+AF.request("https://httpbin.org/put", method: .put)
+AF.request("https://httpbin.org/delete", method: .delete)
+
+
+Alamofire에서는 요청에 대한 응답을 Response 메서드를 이용해 핸들링한다.
+6개의 서로다른 response 메서드가 정의되어 있으며 응답이 완료되면 completion 핸들러가 호출된다. 
+// Response Handler - Unserialized Response
+func response(queue: DispatchQueue = .main, 
+              completionHandler: @escaping (AFDataResponse<Data?>) -> Void) -> Self
+
+// Response Serializer Handler - Serialize using the passed Serializer
+func response<Serializer: DataResponseSerializerProtocol>(queue: DispatchQueue = .main,
+                                                          responseSerializer: Serializer,
+                                                          completionHandler: @escaping (AFDataResponse<Serializer.SerializedObject>) -> Void) -> Self
+
+// Response Data Handler - Serialized into Data
+func responseData(queue: DispatchQueue = .main,
+                  dataPreprocessor: DataPreprocessor = DataResponseSerializer.defaultDataPreprocessor,
+                  emptyResponseCodes: Set<Int> = DataResponseSerializer.defaultEmptyResponseCodes,
+                  emptyRequestMethods: Set<HTTPMethod> = DataResponseSerializer.defaultEmptyRequestMethods,
+                  completionHandler: @escaping (AFDataResponse<Data>) -> Void) -> Self
+
+// Response String Handler - Serialized into String
+func responseString(queue: DispatchQueue = .main,
+                    dataPreprocessor: DataPreprocessor = StringResponseSerializer.defaultDataPreprocessor,
+                    encoding: String.Encoding? = nil,
+                    emptyResponseCodes: Set<Int> = StringResponseSerializer.defaultEmptyResponseCodes,
+                    emptyRequestMethods: Set<HTTPMethod> = StringResponseSerializer.defaultEmptyRequestMethods,
+                    completionHandler: @escaping (AFDataResponse<String>) -> Void) -> Self
+
+// Response Decodable Handler - Serialized into Decodable Type
+func responseDecodable<T: Decodable>(of type: T.Type = T.self,
+                                     queue: DispatchQueue = .main,
+                                     dataPreprocessor: DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor,
+                                     decoder: DataDecoder = JSONDecoder(),
+                                     emptyResponseCodes: Set<Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes,
+                                     emptyRequestMethods: Set<HTTPMethod> = DecodableResponseSerializer<T>.defaultEmptyRequestMethods,
+                                     completionHandler: @escaping (AFDataResponse<T>) -> Void) -> Self
+
+
+
+Response 메서드는 request 메서드를 체이닝해 사용한다.
+AF.request("https://httpbin.org/get").response { response in
+    debugPrint("Response: \(response)")
+}
