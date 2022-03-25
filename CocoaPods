@@ -1,0 +1,39 @@
+CocoaPods
+iOS 및 macOS TVOS 등 애플 플랫폼에서 개발을 할 때 외부 라이브러리를 관리하기 쉽도록 도와주는 의존성 관리 도구이다
+프로젝트에서 필요한 외부 라이브러리를 CocoaPods를 통해 쉽게 관리하고 사용할 수 있다.
+먼저 CocoaPods를 사용하려면 CocoaPods를 설치해야한다.
+
+설치 방법
+https://cocoapods.org
+홈페이지에 들어가 터미널을 열어서 사이트에 적혀져 있는 명령어 한 줄을 입력한다.
+$ sudo gem install cocoapods
+
+
+터미널에서 원하는 폴더로 이동하여 pod init 명령어를 실행한다.
+그러면 해당 폴더에 Podfile이 생성된다.
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'COVID19' do
+  # Comment the next line if you don't want to use dynamic frameworks
+use_frameworks!
+pod ‘라이브러리 이름’
+
+  # Pods for COVID19
+
+  target 'COVID19Tests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'COVID19UITests' do
+    # Pods for testing
+  end
+
+end
+
+우리가 원하는 라이브러리를 use_frameworks 아래에 pod ‘라이브러리 이름’ 형식으로 외부 라이브러리를 추가할 수 있다.
+이렇게 라이브러리를 추가한 후 터미널에 pod install 명령어를 입력해 라이브러리를 설치한다.
+해당 폴더에 들어가면 .xcworkspace 프로젝트 파일이 생기는데, 설치한 외부 라이브러리를 사용하기 위해서는 xcode 프로젝트 파일이 아닌 .xcworkspace 프로젝트 파일을 실행해야만 한다. 
+[!] Please close any current Xcode sessions and use `COVID19.xcworkspace` for this project from now on.
+Pod installation complete! There are 2 dependencies from the Podfile and 3 total pods installed.
