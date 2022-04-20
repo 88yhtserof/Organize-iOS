@@ -7,4 +7,22 @@ UITabBarItem을 tap하게 되면 아이텀이 선택되고 강조되게 된다. 
 UITabBarController
 다중 선택 인터페이스를 관리하는 컨테이너 뷰 컨트롤러로, 선택에 따라 어떤 자식 뷰 컨트롤러를 보여줄 것인지가 결정된다.
 UITabBarController는 UIVieaController를 상속받는 클래스임으로 View 속성을 갖는다. 해당 뷰는 TabBarView와 Custom 컨텐츠를 포함한 뷰이다.
-TabBarView는 사용자를 위해 선택 컨트롤러를 제공하고 하나 또는 한 이상의 TabBarItem으로 구성이 된다. 그리고 선택된 아이템이 해당하는 컨텐트가 화면에 표시되게 된다.
+TabBarView는 사용자를 위해 선택 컨트롤러를 제공하고 하나 또는 한 개 이상의 TabBarItem으로 구성이 된다. 그리고 선택된 아이템이 해당하는 컨텐트가 화면에 표시되게 된다.
+
+
+
+UITabBarControllerDelegate 프로토콜
+: 탭 바의 동작을 커스텀하기 위한 메서드 모음
+
+  탭 바의 동작을 추가하고자 할 때 UITabBarControllerDelegate 프로토콜을 사용할 수 있다.
+  특히 특정한 탭이 선택되어져야 하는지 결정하기 위해서, 탭이 선택된 후에 동작을 취하도록 하기 위해서, 또는 사용자가 탭의 순서를 커스텀하기 전 후에 액션을 취할 수 있도록 하기 위해서 사용할 수 있다. 
+  이 프로토콜의 메서드를 TabBar에 적용하기 위해서 해당 UITabBarController.delegate 프로퍼티에 커스텀한 객체를 할당해야한다.
+  이 프로토콜의 모든 메서드는 옵셔널 타입이다. 따라서 이 프로토콜을 준수하기 위해 필수적으로 구현해야하는 메서드는 없다.
+  
+  
+  
+  optional func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController)
+  : TabBar Item이 선택되었을 때 호출되는 메서드. delegate에게 사용자가 TabBar Item이 선택되었다는 걸 알려주는 메서드. 
+  didSelect - 선택된 ViewController를 의미한다.
+
+
